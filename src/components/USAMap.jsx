@@ -1,9 +1,9 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react'
 import STATES_JSON from '../utils/states.json'
 
-const ZOOM_LEVELS = [1, 1.5, 2, 2.5];
+const ZOOM_LEVELS = [1, 1.5, 2, 2.5, 3, 3.5, 4];
 const MIN_ZOOM = 1;
-const MAX_ZOOM = 2.5;
+const MAX_ZOOM = 4;
 const TRANSITION_MS = 250;
 
 export default function USAMap() {
@@ -270,14 +270,14 @@ export default function USAMap() {
                     cx={state.x ? state.x : x}
                     cy={state.y ? state.y : y}
                     r={8} // Smaller size
-                    fill="#e5e7eb" 
+                    fill="#e5e7eb"
                     stroke="#1e293b" // slate-800
-                    strokeWidth="2"
-                    style={{ cursor: 'pointer' }}
+                    strokeWidth="1.2"
+                    style={{ cursor: 'pointer', outline: 'none', boxShadow: 'none', WebkitTapHighlightColor: 'transparent' }}
                     tabIndex={0}
                     aria-label="District of Columbia"
                     onClick={() => { alert('DC clicked!'); }}
-                  className="tw-cursor-pointer tw-transition-colors tw-duration-200 tw-ease-in-out tw-fill-gray-200 tw-stroke-gray-400 tw-stroke-[0.8] hover:tw-fill-blue-500 focus:tw-fill-blue-500 active:tw-fill-blue-500"
+                    className="tw-cursor-pointer tw-transition-colors tw-duration-200 tw-ease-in-out tw-fill-gray-200 hover:tw-fill-blue-500 focus:tw-fill-blue-500 active:tw-fill-blue-500"
                     onKeyPress={(e) => { if (e.key === 'Enter') { alert('DC clicked!'); } }}
                   >
                   <title>{state.name}</title>
