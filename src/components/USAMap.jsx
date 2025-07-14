@@ -24,12 +24,15 @@ export default function USAMap() {
   const viewBoxRef = useRef(viewBox);
   const lastTouchDistance = useRef(null);
   const lastTouchCenter = useRef(null);
-  const lastTap = useRef(0);
+  // Add refs to store initial pinch state
+  const initialPinchCenter = useRef(null);
+  const initialPinchZoom = useRef(null);
 
   // --- UTILS ---
   const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
 
   // --- VIEWBOX HELPERS ---
+  // Update getViewBoxForZoom to return the actual center after clamping
   const getViewBoxForZoom = (zoom, center = null) => {
     const width = MAP_WIDTH / zoom;
     const height = MAP_HEIGHT / zoom;
@@ -37,50 +40,57 @@ export default function USAMap() {
     if (center) {
       x = clamp(center.x - width / 2, 0, MAP_WIDTH - width);
       y = clamp(center.y - height / 2, 0, MAP_HEIGHT - height);
+      // Recalculate actual center after clamping
+      const actualCenter = {
+        x: x + width / 2,
+        y: y + height / 2
+      };
+      return { x, y, width, height, actualCenter };
     } else {
       // Center on map center
       x = (MAP_WIDTH - width) / 2;
       y = (MAP_HEIGHT - height) / 2;
+      return { x, y, width, height, actualCenter: { x: x + width / 2, y: y + height / 2 } };
     }
-    return { x, y, width, height };
   };
 
   // --- ZOOM HANDLERS ---
+  // Update setZoomLevel to use the actual center for subsequent zooms
   const setZoomLevel = useCallback((newZoom, focusSvgPoint = null) => {
     newZoom = clamp(newZoom, MIN_ZOOM, MAX_ZOOM);
     if (newZoom === zoomRef.current) return;
-    let newViewBox;
+    let newViewBoxObj;
     if (focusSvgPoint && newZoom > 1) {
-      newViewBox = getViewBoxForZoom(newZoom, focusSvgPoint);
+      newViewBoxObj = getViewBoxForZoom(newZoom, focusSvgPoint);
     } else {
-      newViewBox = getViewBoxForZoom(newZoom, null);
+      newViewBoxObj = getViewBoxForZoom(newZoom, null);
     }
+    const { x, y, width, height, actualCenter } = newViewBoxObj;
     setTransition(true);
     setZoom(newZoom);
-    setViewBox(newViewBox);
+    setViewBox({ x, y, width, height });
     zoomRef.current = newZoom;
-    viewBoxRef.current = newViewBox;
+    viewBoxRef.current = { x, y, width, height };
+    // Store the actual center for next zoom
+    setLastViewBoxCenter(actualCenter);
   }, []);
+
+  // Add state for lastViewBoxCenter
+  const [lastViewBoxCenter, setLastViewBoxCenter] = useState({ x: MAP_WIDTH / 2, y: MAP_HEIGHT / 2 });
 
   const zoomIn = useCallback(() => {
     const idx = ZOOM_LEVELS.findIndex(z => z > zoomRef.current);
     if (idx !== -1) {
-      // Use current viewBox center as focus point
-      const vb = viewBoxRef.current;
-      const center = { x: vb.x + vb.width / 2, y: vb.y + vb.height / 2 };
-      setZoomLevel(ZOOM_LEVELS[idx], center);
+      setZoomLevel(ZOOM_LEVELS[idx], lastViewBoxCenter);
     }
-  }, [setZoomLevel]);
+  }, [setZoomLevel, lastViewBoxCenter]);
 
   const zoomOut = useCallback(() => {
     const idx = ZOOM_LEVELS.slice().reverse().findIndex(z => z < zoomRef.current);
     if (idx !== -1) {
-      // Use current viewBox center as focus point
-      const vb = viewBoxRef.current;
-      const center = { x: vb.x + vb.width / 2, y: vb.y + vb.height / 2 };
-      setZoomLevel(ZOOM_LEVELS[ZOOM_LEVELS.length - 1 - idx], center);
+      setZoomLevel(ZOOM_LEVELS[ZOOM_LEVELS.length - 1 - idx], lastViewBoxCenter);
     }
-  }, [setZoomLevel]);
+  }, [setZoomLevel, lastViewBoxCenter]);
 
   const resetZoom = useCallback(() => {
     setTransition(true);
@@ -164,7 +174,9 @@ export default function USAMap() {
   const handleTouchStart = (e) => {
     if (e.touches.length === 2) {
       lastTouchDistance.current = getTouchDistance(e.touches);
-      lastTouchCenter.current = getTouchCenter(e.touches);
+      // Record the initial center and zoom for stable pinch
+      initialPinchCenter.current = getTouchCenter(e.touches);
+      initialPinchZoom.current = zoomRef.current;
     } else if (e.touches.length === 1 && zoomRef.current > 1) {
       startPan(e.touches[0].clientX, e.touches[0].clientY);
     }
@@ -173,15 +185,15 @@ export default function USAMap() {
   const handleTouchMove = (e) => {
     if (e.touches.length === 2) {
       const dist = getTouchDistance(e.touches);
-      const center = getTouchCenter(e.touches);
-      if (lastTouchDistance.current) {
+      if (lastTouchDistance.current && initialPinchCenter.current && initialPinchZoom.current) {
         const scale = dist / lastTouchDistance.current;
-        let newZoom = clamp(zoomRef.current * scale, MIN_ZOOM, MAX_ZOOM);
+        let newZoom = clamp(initialPinchZoom.current * scale, MIN_ZOOM, MAX_ZOOM);
         let nearest = ZOOM_LEVELS.reduce((prev, curr) => Math.abs(curr - newZoom) < Math.abs(prev - newZoom) ? curr : prev);
-        setZoomLevel(nearest, center);
+        setZoomLevel(nearest, initialPinchCenter.current);
       }
+      // Do not update initialPinchCenter/Zoom during move
+      // Only update lastTouchDistance for next move
       lastTouchDistance.current = dist;
-      lastTouchCenter.current = center;
     } else if (e.touches.length === 1 && isPanning) {
       handlePointerMove(e);
     }
@@ -190,29 +202,14 @@ export default function USAMap() {
   const handleTouchEnd = () => {
     lastTouchDistance.current = null;
     lastTouchCenter.current = null;
+    initialPinchCenter.current = null;
+    initialPinchZoom.current = null;
     setIsPanning(false);
     setTransition(true);
   };
 
   // --- DOUBLE TAP TO ZOOM ---
-  const handleDoubleTap = (e) => {
-    const now = Date.now();
-    if (now - lastTap.current < 300) {
-      const container = svgContainerRef.current;
-      const rect = container.getBoundingClientRect();
-      const x = (e.touches[0].clientX - rect.left) / rect.width * viewBoxRef.current.width + viewBoxRef.current.x;
-      const y = (e.touches[0].clientY - rect.top) / rect.height * viewBoxRef.current.height + viewBoxRef.current.y;
-      zoomInWithCenter({ x, y });
-      lastTap.current = 0;
-    } else {
-      lastTap.current = now;
-    }
-  };
-
-  const zoomInWithCenter = (center) => {
-    const idx = ZOOM_LEVELS.findIndex(z => z > zoomRef.current);
-    if (idx !== -1) setZoomLevel(ZOOM_LEVELS[idx], center);
-  };
+  // Remove handleDoubleTap and its usage
 
   // --- WHEEL ZOOM (desktop) ---
   const handleWheel = (e) => {
@@ -220,11 +217,9 @@ export default function USAMap() {
     if (e.ctrlKey) return;
     e.preventDefault();
     setTransition(true);
-    const rect = svgContainerRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width * viewBoxRef.current.width + viewBoxRef.current.x;
-    const y = (e.clientY - rect.top) / rect.height * viewBoxRef.current.height + viewBoxRef.current.y;
+    // Only needed for zooming out now
     if (e.deltaY < 0) {
-      zoomInWithCenter({ x, y });
+      zoomIn();
     } else if (e.deltaY > 0) {
       const idx = ZOOM_LEVELS.slice().reverse().findIndex(z => z < zoomRef.current);
       if (idx !== -1) {
@@ -255,6 +250,11 @@ export default function USAMap() {
     viewBoxRef.current = viewBox;
   }, [viewBox]);
 
+  // Update viewBox effect to keep lastViewBoxCenter in sync
+  useEffect(() => {
+    setLastViewBoxCenter({ x: viewBox.x + viewBox.width / 2, y: viewBox.y + viewBox.height / 2 });
+  }, [viewBox]);
+
   // --- HIDE CONTROLS ON MOBILE WHEN NOT ZOOMED ---
   useEffect(() => {
     if (zoom === 1) {
@@ -275,7 +275,7 @@ export default function USAMap() {
       onMouseMove={handlePointerMove}
       onMouseUp={handlePointerUp}
       onMouseLeave={handlePointerUp}
-      onTouchStart={e => { handleTouchStart(e); handleDoubleTap(e); }}
+      onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       style={{ WebkitTapHighlightColor: 'transparent', userSelect: 'none' }}
