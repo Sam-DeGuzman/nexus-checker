@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/embed.js'),
+      entry: path.resolve(__dirname, 'src/embed.jsx'),
       name: 'NexusWidget',
       formats: ['iife'],
       fileName: () => 'nexus-widget.js',
