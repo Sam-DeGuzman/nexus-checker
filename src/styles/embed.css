@@ -1,0 +1,54 @@
+/* CSS Reset and isolation for widget */
+.nexus-widget, .nexus-widget * {
+  all: unset;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.nexus-widget {
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  max-width: 100vw;
+  min-width: 0;
+  min-height: 0;
+  background: #fff;
+  color: #111;
+  font-family: system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nexus-widget [tabindex],
+.nexus-widget button,
+.nexus-widget a {
+  min-width: 44px;
+  min-height: 44px;
+  touch-action: manipulation;
+  cursor: pointer;
+  outline: none;
+  border-radius: 8px;
+}
+
+.nexus-widget .tw-text-base {
+  font-size: 1rem;
+}
+
+.nexus-widget .tw-text-lg {
+  font-size: 1.125rem;
+}
+
+.nexus-widget .tw-text-xl {
+  font-size: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .nexus-widget .tw-text-base {
+    font-size: 1.125rem;
+  }
+  .nexus-widget .tw-text-lg {
+    font-size: 1.25rem;
+  }
+  .nexus-widget .tw-text-xl {
+    font-size: 1.5rem;
+  }
+} 

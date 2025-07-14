@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#nexus-checker-widget-root {
+  all: initial;
+  font-family: inherit;
+}
+
+/* Add any additional widget-specific styles here */
