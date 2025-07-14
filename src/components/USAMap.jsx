@@ -1,9 +1,9 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react'
 import STATES_JSON from '../utils/states.json'
 
-const ZOOM_LEVELS = [1, 1.5, 2, 2.5, 3, 3.5, 4];
+const ZOOM_LEVELS = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6];
 const MIN_ZOOM = 1;
-const MAX_ZOOM = 4;
+const MAX_ZOOM = 6;
 const TRANSITION_MS = 250;
 const MAP_WIDTH = 959;
 const MAP_HEIGHT = 593;
