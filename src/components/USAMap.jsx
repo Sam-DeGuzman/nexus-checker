@@ -5,51 +5,61 @@ const ZOOM_LEVELS = [1, 1.5, 2, 2.5, 3, 3.5, 4];
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 4;
 const TRANSITION_MS = 250;
+const MAP_WIDTH = 959;
+const MAP_HEIGHT = 593;
 
 export default function USAMap() {
   const STATES_SVG_ARR = STATES_JSON.states;
 
-  // --- ZOOM & PAN STATE ---
+  // --- ZOOM & PAN STATE (viewBox only) ---
   const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [viewBox, setViewBox] = useState({ x: 0, y: 0, width: MAP_WIDTH, height: MAP_HEIGHT });
   const [isPanning, setIsPanning] = useState(false);
-  const [lastPan, setLastPan] = useState({ x: 0, y: 0 });
+  const [lastPan, setLastPan] = useState({ x: 0, y: 0 }); // in client coords
+  const [lastViewBox, setLastViewBox] = useState({ x: 0, y: 0 }); // for pan start
   const [transition, setTransition] = useState(true);
   const [showControls, setShowControls] = useState(true);
   const svgContainerRef = useRef(null);
-  const panRef = useRef(pan);
   const zoomRef = useRef(zoom);
+  const viewBoxRef = useRef(viewBox);
   const lastTouchDistance = useRef(null);
   const lastTouchCenter = useRef(null);
   const lastTap = useRef(0);
 
-  // --- BOUNDS ---
-  const MAP_WIDTH = 959;
-  const MAP_HEIGHT = 593;
-
   // --- UTILS ---
   const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
 
+  // --- VIEWBOX HELPERS ---
+  const getViewBoxForZoom = (zoom, center = null) => {
+    const width = MAP_WIDTH / zoom;
+    const height = MAP_HEIGHT / zoom;
+    let x = 0, y = 0;
+    if (center) {
+      x = clamp(center.x - width / 2, 0, MAP_WIDTH - width);
+      y = clamp(center.y - height / 2, 0, MAP_HEIGHT - height);
+    } else {
+      // Center on map center
+      x = (MAP_WIDTH - width) / 2;
+      y = (MAP_HEIGHT - height) / 2;
+    }
+    return { x, y, width, height };
+  };
+
   // --- ZOOM HANDLERS ---
-  const setZoomLevel = useCallback((newZoom, center = null) => {
+  const setZoomLevel = useCallback((newZoom, focusSvgPoint = null) => {
     newZoom = clamp(newZoom, MIN_ZOOM, MAX_ZOOM);
     if (newZoom === zoomRef.current) return;
-    // Center zoom on a point if provided
-    if (center && newZoom > 1) {
-      // Calculate new pan so that the center point stays under the cursor
-      const rect = svgContainerRef.current.getBoundingClientRect();
-      const cx = center.x - rect.left;
-      const cy = center.y - rect.top;
-      const scale = newZoom / zoomRef.current;
-      const newPanX = (panRef.current.x - cx) * scale + cx;
-      const newPanY = (panRef.current.y - cy) * scale + cy;
-      setPan(boundsCheck({ x: newPanX, y: newPanY }, newZoom));
-    } else if (newZoom === 1) {
-      setPan({ x: 0, y: 0 });
+    let newViewBox;
+    if (focusSvgPoint && newZoom > 1) {
+      newViewBox = getViewBoxForZoom(newZoom, focusSvgPoint);
+    } else {
+      newViewBox = getViewBoxForZoom(newZoom, null);
     }
     setTransition(true);
     setZoom(newZoom);
+    setViewBox(newViewBox);
     zoomRef.current = newZoom;
+    viewBoxRef.current = newViewBox;
   }, []);
 
   const zoomIn = useCallback(() => {
@@ -65,30 +75,24 @@ export default function USAMap() {
   const resetZoom = useCallback(() => {
     setTransition(true);
     setZoom(1);
-    setPan({ x: 0, y: 0 });
+    const centeredViewBox = getViewBoxForZoom(1, null);
+    setViewBox(centeredViewBox);
     zoomRef.current = 1;
-    panRef.current = { x: 0, y: 0 };
+    viewBoxRef.current = centeredViewBox;
   }, []);
 
-  // --- PAN HANDLERS ---
-  function boundsCheck(pan, zoom) {
-    // Prevent panning outside the map
-    const container = svgContainerRef.current;
-    if (!container) return pan;
-    const rect = container.getBoundingClientRect();
-    const w = rect.width;
-    const h = rect.height;
-    const maxX = (zoom - 1) * w / 2;
-    const maxY = (zoom - 1) * h / 2;
+  // --- PAN HANDLERS (viewBox x/y) ---
+  function boundsCheckViewBox(x, y, width, height) {
     return {
-      x: clamp(pan.x, -maxX, maxX),
-      y: clamp(pan.y, -maxY, maxY),
+      x: clamp(x, 0, MAP_WIDTH - width),
+      y: clamp(y, 0, MAP_HEIGHT - height),
     };
   }
 
   const startPan = (clientX, clientY) => {
     setIsPanning(true);
-    setLastPan({ x: clientX - panRef.current.x, y: clientY - panRef.current.y });
+    setLastPan({ x: clientX, y: clientY });
+    setLastViewBox({ x: viewBoxRef.current.x, y: viewBoxRef.current.y });
     setTransition(false);
   };
 
@@ -112,12 +116,15 @@ export default function USAMap() {
       clientY = e.clientY;
     }
     requestAnimationFrame(() => {
-      const newPan = {
-        x: clientX - lastPan.x,
-        y: clientY - lastPan.y,
-      };
-      setPan(boundsCheck(newPan, zoomRef.current));
-      panRef.current = boundsCheck(newPan, zoomRef.current);
+      const container = svgContainerRef.current;
+      const rect = container.getBoundingClientRect();
+      const dx = (clientX - lastPan.x) * (viewBoxRef.current.width / rect.width);
+      const dy = (clientY - lastPan.y) * (viewBoxRef.current.height / rect.height);
+      let newX = lastViewBox.x - dx;
+      let newY = lastViewBox.y - dy;
+      const bounded = boundsCheckViewBox(newX, newY, viewBoxRef.current.width, viewBoxRef.current.height);
+      setViewBox(vb => ({ ...vb, ...bounded }));
+      viewBoxRef.current = { ...viewBoxRef.current, ...bounded };
     });
   };
 
@@ -135,10 +142,13 @@ export default function USAMap() {
   };
   const getTouchCenter = (touches) => {
     if (touches.length < 2) return { x: 0, y: 0 };
-    return {
-      x: (touches[0].clientX + touches[1].clientX) / 2,
-      y: (touches[0].clientY + touches[1].clientY) / 2,
-    };
+    const container = svgContainerRef.current;
+    const rect = container.getBoundingClientRect();
+    const x = (touches[0].clientX + touches[1].clientX) / 2 - rect.left;
+    const y = (touches[0].clientY + touches[1].clientY) / 2 - rect.top;
+    const svgX = viewBoxRef.current.x + (x / rect.width) * viewBoxRef.current.width;
+    const svgY = viewBoxRef.current.y + (y / rect.height) * viewBoxRef.current.height;
+    return { x: svgX, y: svgY };
   };
 
   const handleTouchStart = (e) => {
@@ -152,13 +162,13 @@ export default function USAMap() {
 
   const handleTouchMove = (e) => {
     if (e.touches.length === 2) {
-      // Pinch to zoom
       const dist = getTouchDistance(e.touches);
       const center = getTouchCenter(e.touches);
       if (lastTouchDistance.current) {
         const scale = dist / lastTouchDistance.current;
         let newZoom = clamp(zoomRef.current * scale, MIN_ZOOM, MAX_ZOOM);
-        setZoomLevel(newZoom, center);
+        let nearest = ZOOM_LEVELS.reduce((prev, curr) => Math.abs(curr - newZoom) < Math.abs(prev - newZoom) ? curr : prev);
+        setZoomLevel(nearest, center);
       }
       lastTouchDistance.current = dist;
       lastTouchCenter.current = center;
@@ -175,27 +185,39 @@ export default function USAMap() {
   };
 
   // --- DOUBLE TAP TO ZOOM ---
-  const handleDoubleTap = () => {
+  const handleDoubleTap = (e) => {
     const now = Date.now();
     if (now - lastTap.current < 300) {
-      // Double tap detected
-      zoomIn();
+      const container = svgContainerRef.current;
+      const rect = container.getBoundingClientRect();
+      const x = (e.touches[0].clientX - rect.left) / rect.width * viewBoxRef.current.width + viewBoxRef.current.x;
+      const y = (e.touches[0].clientY - rect.top) / rect.height * viewBoxRef.current.height + viewBoxRef.current.y;
+      zoomInWithCenter({ x, y });
       lastTap.current = 0;
     } else {
       lastTap.current = now;
     }
   };
 
+  const zoomInWithCenter = (center) => {
+    const idx = ZOOM_LEVELS.findIndex(z => z > zoomRef.current);
+    if (idx !== -1) setZoomLevel(ZOOM_LEVELS[idx], center);
+  };
+
   // --- WHEEL ZOOM (desktop) ---
   const handleWheel = (e) => {
     if (!svgContainerRef.current) return;
-    if (e.ctrlKey) return; // let browser handle pinch-zoom
+    if (e.ctrlKey) return;
     e.preventDefault();
     setTransition(true);
+    const rect = svgContainerRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width * viewBoxRef.current.width + viewBoxRef.current.x;
+    const y = (e.clientY - rect.top) / rect.height * viewBoxRef.current.height + viewBoxRef.current.y;
     if (e.deltaY < 0) {
-      zoomIn();
+      zoomInWithCenter({ x, y });
     } else if (e.deltaY > 0) {
-      zoomOut();
+      const idx = ZOOM_LEVELS.slice().reverse().findIndex(z => z < zoomRef.current);
+      if (idx !== -1) setZoomLevel(ZOOM_LEVELS[ZOOM_LEVELS.length - 1 - idx], { x, y });
     }
   };
 
@@ -212,11 +234,11 @@ export default function USAMap() {
 
   // --- UPDATE REFS ON STATE CHANGE ---
   useEffect(() => {
-    panRef.current = pan;
-  }, [pan]);
-  useEffect(() => {
     zoomRef.current = zoom;
   }, [zoom]);
+  useEffect(() => {
+    viewBoxRef.current = viewBox;
+  }, [viewBox]);
 
   // --- HIDE CONTROLS ON MOBILE WHEN NOT ZOOMED ---
   useEffect(() => {
@@ -238,20 +260,19 @@ export default function USAMap() {
       onMouseMove={handlePointerMove}
       onMouseUp={handlePointerUp}
       onMouseLeave={handlePointerUp}
-      onTouchStart={e => { handleTouchStart(e); handleDoubleTap(); }}
+      onTouchStart={e => { handleTouchStart(e); handleDoubleTap(e); }}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       style={{ WebkitTapHighlightColor: 'transparent', userSelect: 'none' }}
     >
       <svg
-        viewBox="0 0 959 593"
+        viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
         className="usa-map-svg tw-w-full tw-h-full tw-block"
         xmlns="http://www.w3.org/2000/svg"
         aria-labelledby="usa-map-title"
         focusable="false"
         style={{
-          transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale3d(${zoom}, ${zoom}, 1)` ,
-          transition: transition ? `transform ${TRANSITION_MS}ms cubic-bezier(0.4,0,0.2,1)` : 'none',
+          transition: transition ? `all ${TRANSITION_MS}ms cubic-bezier(0.4,0,0.2,1)` : 'none',
           touchAction: 'none',
           willChange: 'transform',
         }}
