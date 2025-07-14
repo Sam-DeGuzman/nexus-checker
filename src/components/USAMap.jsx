@@ -64,12 +64,22 @@ export default function USAMap() {
 
   const zoomIn = useCallback(() => {
     const idx = ZOOM_LEVELS.findIndex(z => z > zoomRef.current);
-    if (idx !== -1) setZoomLevel(ZOOM_LEVELS[idx]);
+    if (idx !== -1) {
+      // Use current viewBox center as focus point
+      const vb = viewBoxRef.current;
+      const center = { x: vb.x + vb.width / 2, y: vb.y + vb.height / 2 };
+      setZoomLevel(ZOOM_LEVELS[idx], center);
+    }
   }, [setZoomLevel]);
 
   const zoomOut = useCallback(() => {
     const idx = ZOOM_LEVELS.slice().reverse().findIndex(z => z < zoomRef.current);
-    if (idx !== -1) setZoomLevel(ZOOM_LEVELS[ZOOM_LEVELS.length - 1 - idx]);
+    if (idx !== -1) {
+      // Use current viewBox center as focus point
+      const vb = viewBoxRef.current;
+      const center = { x: vb.x + vb.width / 2, y: vb.y + vb.height / 2 };
+      setZoomLevel(ZOOM_LEVELS[ZOOM_LEVELS.length - 1 - idx], center);
+    }
   }, [setZoomLevel]);
 
   const resetZoom = useCallback(() => {
@@ -217,7 +227,12 @@ export default function USAMap() {
       zoomInWithCenter({ x, y });
     } else if (e.deltaY > 0) {
       const idx = ZOOM_LEVELS.slice().reverse().findIndex(z => z < zoomRef.current);
-      if (idx !== -1) setZoomLevel(ZOOM_LEVELS[ZOOM_LEVELS.length - 1 - idx], { x, y });
+      if (idx !== -1) {
+        // Use current viewBox center as focus point for zooming out
+        const vb = viewBoxRef.current;
+        const center = { x: vb.x + vb.width / 2, y: vb.y + vb.height / 2 };
+        setZoomLevel(ZOOM_LEVELS[ZOOM_LEVELS.length - 1 - idx], center);
+      }
     }
   };
 
@@ -293,7 +308,7 @@ export default function USAMap() {
                     r={8} // Smaller size
                     fill="#e5e7eb"
                     stroke="#1e293b" // slate-800
-                    strokeWidth="1.2"
+                    strokeWidth="0.8"
                     style={{ cursor: 'pointer', outline: 'none', boxShadow: 'none', WebkitTapHighlightColor: 'transparent' }}
                     tabIndex={0}
                     aria-label="District of Columbia"
