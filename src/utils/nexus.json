@@ -1,0 +1,562 @@
+{
+    "California": {
+        "revenue": 500000,
+        "txns": null,
+        "logic": "revenue",
+        "question": "Have you made over $500,000 in sales in California?",
+        "physical_prompts": [
+            "Do you have an office or employees in California?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Florida": {
+        "revenue": 100000,
+        "txns": 200,
+        "logic": "or",
+        "question": "Have you made over $100,000 in sales OR more than 200 transactions in Florida?",
+        "physical_prompts": [
+            "Do you have an office or employees in Florida?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Texas": {
+        "revenue": 500000,
+        "txns": null,
+        "logic": "revenue",
+        "question": "Have you made over $500,000 in sales in Texas?",
+        "physical_prompts": [
+            "Do you have an office or employees in Texas?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "New York": {
+        "revenue": 500000,
+        "txns": 100,
+        "logic": "and",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in New York?",
+        "physical_prompts": [
+            "Do you have an office or employees in New York?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Oregon": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Oregon?",
+        "physical_prompts": [
+            "Do you have an office or employees in Oregon?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Alabama": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Alabama?",
+        "physical_prompts": [
+            "Do you have an office or employees in Alabama?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Alaska": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Alaska?",
+        "physical_prompts": [
+            "Do you have an office or employees in Alaska?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Arizona": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Arizona?",
+        "physical_prompts": [
+            "Do you have an office or employees in Arizona?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Arkansas": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Arkansas?",
+        "physical_prompts": [
+            "Do you have an office or employees in Arkansas?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "California": {
+        "revenue": 500000,
+        "txns": null,
+        "logic": "revenue",
+        "question": "Have you made over $500,000 in sales in California?",
+        "physical_prompts": [
+            "Do you have an office or employees in California?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Colorado": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Colorado?",
+        "physical_prompts": [
+            "Do you have an office or employees in Colorado?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Connecticut": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Connecticut?",
+        "physical_prompts": [
+            "Do you have an office or employees in Connecticut?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Delaware": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Delaware?",
+        "physical_prompts": [
+            "Do you have an office or employees in Delaware?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Florida": {
+        "revenue": 100000,
+        "txns": 200,
+        "logic": "or",
+        "question": "Have you made over $100,000 in sales OR more than 200 transactions in Florida?",
+        "physical_prompts": [
+            "Do you have an office or employees in Florida?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Georgia": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Georgia?",
+        "physical_prompts": [
+            "Do you have an office or employees in Georgia?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Hawaii": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Hawaii?",
+        "physical_prompts": [
+            "Do you have an office or employees in Hawaii?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Idaho": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Idaho?",
+        "physical_prompts": [
+            "Do you have an office or employees in Idaho?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Illinois": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Illinois?",
+        "physical_prompts": [
+            "Do you have an office or employees in Illinois?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Indiana": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Indiana?",
+        "physical_prompts": [
+            "Do you have an office or employees in Indiana?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Iowa": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Iowa?",
+        "physical_prompts": [
+            "Do you have an office or employees in Iowa?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Kansas": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Kansas?",
+        "physical_prompts": [
+            "Do you have an office or employees in Kansas?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Kentucky": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Kentucky?",
+        "physical_prompts": [
+            "Do you have an office or employees in Kentucky?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Louisiana": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Louisiana?",
+        "physical_prompts": [
+            "Do you have an office or employees in Louisiana?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Maine": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Maine?",
+        "physical_prompts": [
+            "Do you have an office or employees in Maine?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Maryland": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Maryland?",
+        "physical_prompts": [
+            "Do you have an office or employees in Maryland?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Massachusetts": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Massachusetts?",
+        "physical_prompts": [
+            "Do you have an office or employees in Massachusetts?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Michigan": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Michigan?",
+        "physical_prompts": [
+            "Do you have an office or employees in Michigan?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Minnesota": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Minnesota?",
+        "physical_prompts": [
+            "Do you have an office or employees in Minnesota?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Mississippi": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Mississippi?",
+        "physical_prompts": [
+            "Do you have an office or employees in Mississippi?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Missouri": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Missouri?",
+        "physical_prompts": [
+            "Do you have an office or employees in Missouri?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Montana": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Montana?",
+        "physical_prompts": [
+            "Do you have an office or employees in Montana?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Nebraska": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Nebraska?",
+        "physical_prompts": [
+            "Do you have an office or employees in Nebraska?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Nevada": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Nevada?",
+        "physical_prompts": [
+            "Do you have an office or employees in Nevada?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "New Hampshire": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in New Hampshire?",
+        "physical_prompts": [
+            "Do you have an office or employees in New Hampshire?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "New Jersey": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in New Jersey?",
+        "physical_prompts": [
+            "Do you have an office or employees in New Jersey?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "New Mexico": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in New Mexico?",
+        "physical_prompts": [
+            "Do you have an office or employees in New Mexico?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "New York": {
+        "revenue": 500000,
+        "txns": 100,
+        "logic": "and",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in New York?",
+        "physical_prompts": [
+            "Do you have an office or employees in New York?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "North Carolina": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in North Carolina?",
+        "physical_prompts": [
+            "Do you have an office or employees in North Carolina?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "North Dakota": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in North Dakota?",
+        "physical_prompts": [
+            "Do you have an office or employees in North Dakota?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Ohio": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Ohio?",
+        "physical_prompts": [
+            "Do you have an office or employees in Ohio?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Oklahoma": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Oklahoma?",
+        "physical_prompts": [
+            "Do you have an office or employees in Oklahoma?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Oregon": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Oregon?",
+        "physical_prompts": [
+            "Do you have an office or employees in Oregon?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Pennsylvania": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Pennsylvania?",
+        "physical_prompts": [
+            "Do you have an office or employees in Pennsylvania?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Rhode Island": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Rhode Island?",
+        "physical_prompts": [
+            "Do you have an office or employees in Rhode Island?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "South Carolina": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in South Carolina?",
+        "physical_prompts": [
+            "Do you have an office or employees in South Carolina?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "South Dakota": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in South Dakota?",
+        "physical_prompts": [
+            "Do you have an office or employees in South Dakota?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Tennessee": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Tennessee?",
+        "physical_prompts": [
+            "Do you have an office or employees in Tennessee?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Texas": {
+        "revenue": 500000,
+        "txns": null,
+        "logic": "revenue",
+        "question": "Have you made over $500,000 in sales in Texas?",
+        "physical_prompts": [
+            "Do you have an office or employees in Texas?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Utah": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Utah?",
+        "physical_prompts": [
+            "Do you have an office or employees in Utah?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Vermont": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Vermont?",
+        "physical_prompts": [
+            "Do you have an office or employees in Vermont?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Virginia": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Virginia?",
+        "physical_prompts": [
+            "Do you have an office or employees in Virginia?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Washington": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Washington?",
+        "physical_prompts": [
+            "Do you have an office or employees in Washington?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "West Virginia": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in West Virginia?",
+        "physical_prompts": [
+            "Do you have an office or employees in West Virginia?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Wisconsin": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Wisconsin?",
+        "physical_prompts": [
+            "Do you have an office or employees in Wisconsin?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "Wyoming": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in Wyoming?",
+        "physical_prompts": [
+            "Do you have an office or employees in Wyoming?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    },
+    "District of Columbia": {
+        "revenue": null,
+        "txns": null,
+        "logic": "none",
+        "question": "Have you made over $500,000 in sales AND more than 100 transactions in the District of Columbia?",
+        "physical_prompts": [
+            "Do you have an office or employees in the District of Columbia?",
+            "Do you use contractors, a warehouse, or store goods here (e.g. FBA)?"
+        ]
+    }
+}

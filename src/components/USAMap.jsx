@@ -8,7 +8,7 @@ const TRANSITION_MS = 250;
 const MAP_WIDTH = 959;
 const MAP_HEIGHT = 593;
 
-export default function USAMap() {
+export default function USAMap({ selectedStates = [], handleStateClick = () => {}, stateColors = {} }) {
   const STATES_SVG_ARR = STATES_JSON.states;
 
   // --- ZOOM & PAN STATE (viewBox only) ---
@@ -294,66 +294,73 @@ export default function USAMap() {
       >
         <g>
           {STATES_SVG_ARR.map((state) => {
-            // Extract the first coordinate from the path data (e.g., 'm 643,467.4 ...' or 'M 139.6,387.6 ...')
             const match = state.d.match(/[mM]\s*(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
             const x = match ? parseFloat(match[1]) : 0;
             const y = match ? parseFloat(match[2]) : 0;
-            // Special rendering for DC
-            if (state.id === "DC") {
-              return (
-                <React.Fragment key={state.id}>
+            const isSelected = selectedStates.includes(state.id);
+            const baseClass =
+              'tw-cursor-pointer tw-transition-colors tw-duration-200 tw-ease-in-out tw-stroke-gray-400 tw-stroke-[0.8]';
+            const fillClass = isSelected
+              ? ''
+              : 'hover:tw-fill-blue-500 active:tw-fill-blue-500';
+            const focusRing =
+              'focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-400';
+            const stateColor = isSelected ? '#3b82f6' : (stateColors[state.id] === 'green' ? '#22c55e' : stateColors[state.id] === 'yellow' ? '#facc15' : stateColors[state.id] === 'red' ? '#ef4444' : '#e5e7eb');
+            // Unified rendering for all states, DC uses <circle>, others use <path>
+            return (
+              <React.Fragment key={state.id}>
+                {state.id === "DC" ? (
                   <circle
                     cx={state.x ? state.x : x}
                     cy={state.y ? state.y : y}
-                    r={8} // Smaller size
-                    fill="#e5e7eb"
-                    stroke="#1e293b" // slate-800
+                    r={8}
+                    fill={stateColor}
+                    stroke="#1e293b"
                     strokeWidth="0.8"
-                    style={{ cursor: 'pointer', outline: 'none', boxShadow: 'none', WebkitTapHighlightColor: 'transparent' }}
+                    style={{ cursor: 'pointer', outline: 'none', boxShadow: 'none', WebkitTapHighlightColor: 'transparent', transition: 'fill 0.2s' }}
                     tabIndex={0}
-                    aria-label="District of Columbia"
-                    onClick={() => { alert('DC clicked!'); }}
-                    className="tw-cursor-pointer tw-transition-colors tw-duration-200 tw-ease-in-out tw-fill-gray-200 hover:tw-fill-blue-500 focus:tw-fill-blue-500 active:tw-fill-blue-500"
-                    onKeyPress={(e) => { if (e.key === 'Enter') { alert('DC clicked!'); } }}
+                    aria-label={state.name}
+                    role="button"
+                    aria-pressed={isSelected}
+                    className={`${baseClass} ${fillClass} ${focusRing}`}
+                    onClick={() => handleStateClick(state.id)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleStateClick(state.id);
+                      }
+                    }}
                   >
-                  <title>{state.name}</title>
+                    <title>{state.name}</title>
                   </circle>
-                  <text
-                    x={state.x ? state.x : x}
-                    y={(state.y ? state.y : y) + 1}
-                    fontSize="7" // Smaller text
-                    textAnchor="middle"
-                    alignmentBaseline="middle"
-                    fill="#1e293b"
-                    style={{ pointerEvents: 'none', userSelect: 'none' }}
+                ) : (
+                  <path
+                    id={state.id}
+                    d={state.d}
+                    style={{ cursor: 'pointer', transition: 'fill 0.2s' }}
+                    aria-label={state.name}
+                    role="button"
+                    aria-pressed={isSelected}
+                    tabIndex={0}
+                    className={`${baseClass} ${fillClass} ${focusRing}`}
+                    fill={stateColor}
+                    stroke="#94a3b8"
+                    strokeWidth="0.8"
+                    onClick={() => handleStateClick(state.id)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleStateClick(state.id);
+                      }
+                    }}
                   >
-                    DC
-                  </text>
-                </React.Fragment>
-              );
-            }
-            // Default rendering for other states
-            return (
-              <React.Fragment key={state.id}>
-                <path
-                  key={state.id}
-                  id={state.id}
-                  d={state.d}
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  aria-label={state.name}
-                  className="tw-cursor-pointer tw-transition-colors tw-duration-200 tw-ease-in-out tw-fill-gray-200 tw-stroke-gray-400 tw-stroke-[0.8] hover:tw-fill-blue-500 focus:tw-fill-blue-500 active:tw-fill-blue-500"
-                  fill="#e5e7eb" // fallback for gray-200
-                  stroke="blue" // fallback for gray-400
-                  strokeWidth="0.8" // fallback for tw-stroke-[0.8] 
-                >
-                  <title>{state.name}</title>
-                </path>
+                    <title>{state.name}</title>
+                  </path>
+                )}
                 <text
                   x={state.x ? state.x : x}
-                  y={state.y ? state.y : y}
-                  fontSize={state.id === "MD" || state.id === "NJ" || state.id === "DE" ? "7" : "10"}
+                  y={state.id === "DC" ? ((state.y ? state.y : y) + 1) : (state.y ? state.y : y)}
+                  fontSize={state.id === "MD" || state.id === "NJ" || state.id === "DE" || state.id === "DC" ? "7" : "10"}
                   textAnchor="middle"
                   alignmentBaseline="middle"
                   fill="#1e293b"
